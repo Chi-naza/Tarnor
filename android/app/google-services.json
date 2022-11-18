@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1023002146889",
+    "project_id": "tarnor-9ee67",
+    "storage_bucket": "tarnor-9ee67.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023002146889:android:d93a00453559a4ceb02798",
+        "android_client_info": {
+          "package_name": "com.example.tanor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1023002146889-s8rbss4r637r6der804fro2t0ddi3k8t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfBalV6iVrZU5C1zkh3ikkbIxlnAlF_84"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1023002146889-s8rbss4r637r6der804fro2t0ddi3k8t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
