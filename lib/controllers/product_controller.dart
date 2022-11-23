@@ -158,5 +158,37 @@ class ProductController extends GetxController{
 
 
 
+  
+  // A function which restocks the a product that is out of stock
+  Future<void> restockProduct(ProductModel product, int addedUnit) async {
+    try{
+      // start loading as request is being processed
+      UserFeedBack.showLoading();
+      // Get a specific product
+      DocumentSnapshot<Map<String, dynamic>> data =  await productFirestoreReference.doc(product.name.toUpperCase()).get();
+      // updating the units of the product
+      await data.reference.update(
+        {
+          'unit' : addedUnit + product.unitAvailable,
+          'unit_available' : product.unitAvailable + addedUnit,
+        }
+      );
+      // little delay before getting updated products from our DB
+      await Future.delayed(const Duration(seconds: 1));
+      getAllProducts();
+
+      UserFeedBack.showSuccess('Product successfully restocked !');
+      // delay and go to home
+      await Future.delayed(const Duration(seconds: 2));
+      _authController.goToHomeScreen();
+    }catch (e){
+      AppLogger.e(e);
+      Get.back();
+     UserFeedBack.showError('Restock operation failed. Try Again !'); 
+    }
+  }
+
+
+
 
 }

@@ -9,6 +9,7 @@ import 'package:tanor/custom_widgets/buttons/tanor_back_button.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/texts/inventory_detail_text_widget.dart';
 import 'package:tanor/models/product_model.dart';
+import 'package:tanor/screens/products/restock_product_screen.dart';
 import 'package:tanor/screens/products/sell_a_product.dart';
 
 class InventoryDetailScreen extends StatelessWidget {
@@ -193,7 +194,9 @@ class InventoryDetailScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 MainButton(
-                  onPressed: (){}, 
+                  onPressed: (){
+                    Get.to(ReStockProductScreen(product: productModel));
+                  }, 
                   text: 'ReStock'
                 ),
                 SizedBox(height: Dimensions.size20),

@@ -1,7 +1,7 @@
-# tanor
+# tarnor
 
 An Inventory App Written in Flutter
 
 ## Keep Track of Your Products
-    - Tanor got your back !
+    - Tarnor got your back !
 
