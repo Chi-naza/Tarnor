@@ -6,6 +6,7 @@ import 'package:tanor/screens/home/tarnor_home.dart';
 import 'package:tanor/screens/intro/splash_screen.dart';
 import 'package:tanor/screens/intro/welcome.dart';
 import 'package:tanor/screens/products/add_new_product.dart';
+import 'package:tanor/screens/products/sell_a_product.dart';
 
 class Routes {
 

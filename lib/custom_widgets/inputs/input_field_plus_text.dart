@@ -6,8 +6,10 @@ class InputFieldPlusTextWidget extends StatelessWidget {
   final String text;
   final TextEditingController textController;
   final bool isItForNumber;
+  final String? myHintText;
+  final Function(String value)? onChanged;
   
-  const InputFieldPlusTextWidget({Key? key, required this.text, required this.textController, this.isItForNumber = false}) : super(key: key);
+  const InputFieldPlusTextWidget({Key? key, required this.text, required this.textController, this.isItForNumber = false, this.myHintText, this.onChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class InputFieldPlusTextWidget extends StatelessWidget {
             autocorrect: true,
             controller: textController,
             keyboardType: isItForNumber? TextInputType.number : TextInputType.text,
+            onChanged: onChanged,
             validator: ((value) {
               if(value!.isEmpty){
                 return 'Provide a value';
@@ -39,7 +42,13 @@ class InputFieldPlusTextWidget extends StatelessWidget {
                 return null;
               }
             }),
-            decoration: InputDecoration(                           
+            decoration: InputDecoration(      
+              hintText: myHintText??'', 
+              hintStyle: const TextStyle(
+                color: AppColors.tarnorFadeTextColor,
+                letterSpacing: 1,
+                fontWeight: FontWeight.w600,                
+              ),                    
               fillColor: AppColors.inputFillColor,
               filled: true,                          
               enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(

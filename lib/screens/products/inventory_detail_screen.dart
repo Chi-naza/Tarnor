@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:tanor/app_constants/app_colors.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
@@ -7,12 +8,23 @@ import 'package:tanor/custom_widgets/buttons/main_button.dart';
 import 'package:tanor/custom_widgets/buttons/tanor_back_button.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/texts/inventory_detail_text_widget.dart';
+import 'package:tanor/models/product_model.dart';
+import 'package:tanor/screens/products/sell_a_product.dart';
 
 class InventoryDetailScreen extends StatelessWidget {
-  const InventoryDetailScreen({Key? key}) : super(key: key);
+  final ProductModel productModel;
+  
+  const InventoryDetailScreen({Key? key, required this.productModel}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
+    // calc. the %centage for the circularProgress Indicator
+    double percentage = ((productModel.unitAvailable)/(productModel.unit))*100;
+    // Reduced to the ratio of 0 - 1 (eg 0.1, 0.2, 0.3, 0.4, etc)
+    double percentValue = percentage/100;
+    print(percentValue);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -26,7 +38,7 @@ class InventoryDetailScreen extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Polycap Wire',
+                  productModel.name, //name
                   style: headline3.copyWith(fontWeight: FontWeight.bold, color: AppColors.tarnorFadeTextColor),
                 ),
               ),
@@ -47,8 +59,8 @@ class InventoryDetailScreen extends StatelessWidget {
                     child: CircularPercentIndicator(
                       radius: Dimensions.size25*3,
                       lineWidth: Dimensions.size30,
-                      percent: 0.75,
-                      center: Text('75%', style: headline3.copyWith(letterSpacing: 2)),
+                      percent: percentValue,
+                      center: Text('${percentage.toInt()}%', style: headline3.copyWith(letterSpacing: 2)),
                       progressColor: AppColors.mainTextColor1,
                       backgroundColor: AppColors.mainTextColor3,
                       reverse: true,
@@ -91,7 +103,7 @@ class InventoryDetailScreen extends StatelessWidget {
                             ),
                             SizedBox(width: Dimensions.size5),
                             Text(
-                              '1,993 Units Available',
+                              '${productModel.unitAvailable} Units Available',  // units available
                               style: headline6, 
                             ),
                           ],
@@ -107,7 +119,7 @@ class InventoryDetailScreen extends StatelessWidget {
                             ),
                             SizedBox(width: Dimensions.size5),
                             Text(
-                              '890 Units Sold',
+                              '${productModel.unitSold} Units Sold', // units sold
                               style: headline6, 
                             ),
                           ],
@@ -130,15 +142,15 @@ class InventoryDetailScreen extends StatelessWidget {
               children: [
                 // product name
                 Expanded(
-                  child: InventoryDetailTextWidget(titleText: 'Product name', valueText: 'Polycap Wires')
+                  child: InventoryDetailTextWidget(titleText: 'Product name', valueText: productModel.name) // name
                 ),
                 // Material
                 Expanded(
-                  child: InventoryDetailTextWidget(titleText: 'Material', valueText: 'Copper')
+                  child: InventoryDetailTextWidget(titleText: 'Material', valueText: productModel.material) // material
                 ),
                 // Length
                 Expanded(
-                  child: InventoryDetailTextWidget(titleText: 'Length(M)', valueText: '174'),
+                  child: InventoryDetailTextWidget(titleText: 'Length(M)', valueText: productModel.length), // length
                 ),
               ],
             ),
@@ -148,15 +160,15 @@ class InventoryDetailScreen extends StatelessWidget {
               children: [
                 // Type
                 Expanded(
-                  child: InventoryDetailTextWidget(titleText: 'Type', valueText: '1,253,236')
+                  child: InventoryDetailTextWidget(titleText: 'Type', valueText: productModel.type)  // type
                 ),
                 // Shape
                 Expanded(
-                  child: InventoryDetailTextWidget(titleText: 'Shape', valueText: 'Cylindrical')
+                  child: InventoryDetailTextWidget(titleText: 'Shape', valueText: productModel.shape) // shape
                 ),
                 // Unit
                 Expanded(
-                  child: InventoryDetailTextWidget(titleText: 'Unit', valueText: '5,200'),
+                  child: InventoryDetailTextWidget(titleText: 'Unit', valueText: productModel.unit.toString()), // units
                 ),
               ],
             ),
@@ -166,7 +178,7 @@ class InventoryDetailScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Size
-                InventoryDetailTextWidget(titleText: 'Size', valueText: 'Medium'),
+                InventoryDetailTextWidget(titleText: 'Size', valueText: productModel.size),  // size
                 SizedBox(width: Dimensions.screenWidth*0.2),
                 // Shape
                 InventoryDetailTextWidget(
@@ -177,9 +189,21 @@ class InventoryDetailScreen extends StatelessWidget {
             ),
             // The ReStock Button
             SizedBox(height: Dimensions.size50),
-            MainButton(
-              onPressed: (){}, 
-              text: 'ReStock'
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MainButton(
+                  onPressed: (){}, 
+                  text: 'ReStock'
+                ),
+                SizedBox(height: Dimensions.size20),
+                MainButton(
+                  onPressed: (){
+                    Get.to(SellAProductScreen(product: productModel));
+                  }, 
+                  text: 'Sell'
+                ),
+              ],
             ),
             SizedBox(height: Dimensions.size30),
             // Back Button

@@ -15,7 +15,7 @@ class InventoryItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Dimensions.size10, vertical: Dimensions.size10),
-      width: Dimensions.screenWidth*0.3,
+      // width: Dimensions.screenWidth*0.3,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Dimensions.size9),
         color: AppColors.tarnorCardColor,
@@ -28,7 +28,7 @@ class InventoryItemCard extends StatelessWidget {
               style: GoogleFonts.montserrat(
                 color: AppColors.mainTextColor2,
                 fontWeight: FontWeight.bold,
-                fontSize: Dimensions.size25
+                fontSize: Dimensions.size20,
               ),
             ),
           ),

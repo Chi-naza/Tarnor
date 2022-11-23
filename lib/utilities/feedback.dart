@@ -85,7 +85,7 @@ class UserFeedBack {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Dimensions.size5)
+          borderRadius: BorderRadius.circular(Dimensions.size9)
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -95,7 +95,9 @@ class UserFeedBack {
             Text(
               confirmQuestion,
               textAlign: TextAlign.center,
-              style: headline3,
+              style: TextStyle(
+                fontSize: Dimensions.size20,
+              ),
             ),
             SizedBox(height: Dimensions.size25),
             Row(
@@ -105,7 +107,7 @@ class UserFeedBack {
                     onTap: (() => Get.back()),
                     child: Text(
                       'Cancel',
-                      style: headline4.copyWith(color: AppColors.tarnorTextColor),
+                      style: headline4.copyWith(color: AppColors.mainColor),
                     ),
                   ),
                 ),

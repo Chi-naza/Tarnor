@@ -5,6 +5,7 @@ import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/app_constants/custom_text_styles.dart';
 import 'package:tanor/controllers/auth_controller.dart';
 import 'package:tanor/screens/products/add_new_product.dart';
+import 'package:tanor/screens/products/sell_a_product.dart';
 
 class HeaderWidget extends GetView<AuthController> {
   final bool isSecondHeader;
@@ -61,8 +62,7 @@ class HeaderWidget extends GetView<AuthController> {
                   elevation: 2,
                   onSelected: ((value) {
                     if(value == 1){
-                      print('Clicked on Notifications');
-                      Get.toNamed(AddNewProductScreen.routeName);
+                      print('Clicked on Notifications');                     
                     }else if(value == 2){
                       // calling logOut function
                       controller.signOutUser();                      

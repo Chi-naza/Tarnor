@@ -5,6 +5,8 @@ class ProductModel {
   String amount;
   List colors;
   int unit;
+  int unitSold;
+  int unitAvailable;
   String shape;
   String size;
   String type;
@@ -18,6 +20,8 @@ class ProductModel {
     required this.amount,
     required this.colors,
     required this.unit,
+    required this.unitSold,
+    required this.unitAvailable,
     required this.shape,
     required this.size,
     required this.type,
@@ -32,6 +36,8 @@ class ProductModel {
     amount = json['amount'],
     colors = json['colors'],
     unit = json['unit'],
+    unitSold = json['unit_sold'],
+    unitAvailable = json['unit_available'],
     shape = json['shape'],
     size = json['size'],
     type = json['type'],
@@ -46,6 +52,8 @@ class ProductModel {
     amount = snapshot['amount'],
     colors = snapshot['colors'],
     unit = snapshot['unit'],
+    unitSold = snapshot['unit_sold'],
+    unitAvailable = snapshot['unit_available'],
     shape = snapshot['shape'],
     size = snapshot['size'],
     type = snapshot['type'],
@@ -62,8 +70,10 @@ class ProductModel {
 
     data['name'] = this.name;
     data['amount'] = this.amount;
-    data['color'] = this.colors;
+    data['colors'] = this.colors;
     data['unit'] = this.unit;
+    data['unit_sold'] = this.unitSold;
+    data['unit_available'] = this.unitAvailable;
     data['shape'] = this.shape;
     data['size'] = this.size;
     data['type'] = this.type;
@@ -78,41 +88,3 @@ class ProductModel {
 }
 
 
-
-
-
-// class CategoryModel {
-//   String category;
-
-//   CategoryModel({ required this.category });
-
-//   CategoryModel.fromJson(Map<String, dynamic> json):
-//     category = json['category'];
-
-
-//   Map<String, dynamic> toJson(){
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['category'] = this.category;
-//     return data;
-//   }
-
-
-// }
-  
-// class ColorModel {
-//   String color;
-
-//   ColorModel({ required this.color });
-
-//   ColorModel.fromJson(Map<String, dynamic> json):
-//     color = json['color'];
-
-
-//   Map<String, dynamic> toJson(){
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['color'] = this.color;
-//     return data;
-//   }
-
-
-// }

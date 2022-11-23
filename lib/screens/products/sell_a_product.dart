@@ -1,38 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:tanor/app_constants/app_colors.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
+import 'package:tanor/controllers/auth_controller.dart';
+import 'package:tanor/controllers/product_controller.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/texts/text_n_divider_header.dart';
 import 'package:tanor/custom_widgets/inputs/input_field_plus_text.dart';
 import 'package:tanor/custom_widgets/buttons/main_button.dart';
+import 'package:tanor/models/product_model.dart';
+import 'package:tanor/utilities/feedback.dart';
 
-class SellAProduct extends StatefulWidget {
-  const SellAProduct({Key? key}) : super(key: key);
+class SellAProductScreen extends StatefulWidget {
+  final ProductModel product;
+
+  const SellAProductScreen({Key? key, required this.product}) : super(key: key);
 
   @override
-  State<SellAProduct> createState() => _SellAProductState();
+  State<SellAProductScreen> createState() => _SellAProductScreenState();
 }
 
-class _SellAProductState extends State<SellAProduct> {
+class _SellAProductScreenState extends State<SellAProductScreen> {
 
-  TextEditingController productNameController = TextEditingController();
-  TextEditingController amountController = TextEditingController();
-  TextEditingController unitController = TextEditingController();
-  TextEditingController shapeController = TextEditingController();
-  TextEditingController sizeController = TextEditingController();
-  TextEditingController typeController = TextEditingController();
-  TextEditingController materialController = TextEditingController();
-  TextEditingController lengthController = TextEditingController();
+   // input controllers
+  TextEditingController unitSoldController = TextEditingController();
 
-  // For DropDowns
-  var selectCategoryList = ['Builder', 'Wire', 'Painter', 'Cutter'];
-  String categoryFirstItem = 'Builder';
 
-  var selectColorList = ['White', 'Yellow', 'Green', 'Black'];
-  String colorListFirstItem = 'White';
+  // Form key
+  var sellProdFormKey = GlobalKey<FormState>();
+
+  // product controller instance
+  ProductController productController = Get.find<ProductController>();
+  // auth controller instance
+  AuthController authController = Get.find<AuthController>();  
+
 
   @override
   Widget build(BuildContext context) {
+  
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -40,7 +45,7 @@ class _SellAProductState extends State<SellAProduct> {
           children: [
             // header
             const HeaderWidget(),
-            const TextnDividerHeader(text: 'New Sale Entry', wantDivider: false),
+            const TextnDividerHeader(text: 'Sell A Product', wantDivider: false),
             // The form Section
             Padding(
               padding: EdgeInsets.symmetric(horizontal: Dimensions.size10),
@@ -50,177 +55,136 @@ class _SellAProductState extends State<SellAProduct> {
                 borderRadius: BorderRadius.circular(Dimensions.size15), 
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: Dimensions.size5, vertical: Dimensions.size20),
-                  child: Form(
-                    child: Column(
-                      children: [
-                        // productName & Amount,  
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Product Name', textController: productNameController),
-                            ),
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Amount', textController: amountController),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.size15),
-                        //INPUT with DROPDOWN: 
-                        // Select Category
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: Dimensions.size15),
-                          child: Row(
+                  child: Column(
+                    children: [
+                      Obx(() {
+                          return Column(
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                     // The Text Above the  Dropdown: CATEGORY
-                                    const Text(
-                                      'Select Category',
-                                      style: TextStyle(
-                                        color: AppColors.mainTextColor3,
-                                        fontWeight: FontWeight.bold,
+                              // productName to be sold,  
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: AbsorbPointer(
+                                      child: InputFieldPlusTextWidget(
+                                        text: '', 
+                                        textController: TextEditingController(),
+                                        myHintText: widget.product.name.toUpperCase(), // product name
                                       ),
                                     ),
-                                    SizedBox(height: Dimensions.size10),
-                                    Container(        
-                                      padding: EdgeInsets.symmetric(horizontal: Dimensions.size25),                          
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(Dimensions.size12),
-                                        color: AppColors.inputFillColor,
-                                      ),                                  
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: Dimensions.size12),
-                                        // Wrapping dropdown button widget with this: to remove the persitent underline
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(                            
-                                            isExpanded: false,
-                                            icon: Icon(Icons.arrow_drop_down, size: Dimensions.size25),  
-                                            value: categoryFirstItem,
-                                            items: selectCategoryList.map((e) {
-                                              return DropdownMenuItem(value: e, child: Text(e));
-                                            }).toList(), 
-                                            onChanged: (String? newValue){
-                                              setState(() {
-                                                categoryFirstItem= newValue!;
-                                              });
-                                            },
-                                            style: const TextStyle(color: AppColors.tarnorTextColor),                                      
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                              SizedBox(width: Dimensions.size10),
-                              // SELECT COLOR
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                     // The Text Above the  Dropdown: COLOR
-                                    const Text(
-                                      'Color',
-                                      style: TextStyle(
-                                        color: AppColors.mainTextColor3,
-                                        fontWeight: FontWeight.bold,
+                              SizedBox(height: Dimensions.size15),
+                              // Unit Sold & Total
+                              Row(
+                                children: [
+                                    Expanded(
+                                    child: Form(
+                                      key: sellProdFormKey,
+                                      child: InputFieldPlusTextWidget(
+                                        text: 'Unit', 
+                                        textController: unitSoldController, 
+                                        isItForNumber: true,
+                                        onChanged: (value) {
+                                            print('I just changed: $value');// testing  
+                                            // Calling the updateSellVariables fro productController                                                                                                                       
+                                            productController.updateProductSellVariables(double.parse(unitSoldController.text.trim()), double.parse(widget.product.amount)); // amount from productModel                              
+                                        },
                                       ),
                                     ),
-                                    SizedBox(height: Dimensions.size10),
-                                    Container(        
-                                      padding: EdgeInsets.symmetric(horizontal: Dimensions.size25),                              
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(Dimensions.size12),
-                                        color: AppColors.inputFillColor,
-                                      ),                                  
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: Dimensions.size12),
-                                        // Wrapping dropdown button widget with this: to remove the persitent underline
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(                            
-                                            isExpanded: false,
-                                            icon: Icon(Icons.arrow_drop_down, size: Dimensions.size25),  
-                                            value: colorListFirstItem,
-                                            items: selectColorList.map((e) {
-                                              return DropdownMenuItem(value: e, child: Text(e));
-                                            }).toList(), 
-                                            onChanged: (String? newValue){
-                                              setState(() {
-                                                colorListFirstItem = newValue!;
-                                              });
-                                            },
-                                            style: const TextStyle(color: AppColors.tarnorTextColor),                                      
-                                          ),
-                                        ),
+                                  ),
+                                  SizedBox(width: Dimensions.size10),
+                                  // Total Amount
+                                  Expanded(
+                                    child: AbsorbPointer(
+                                      child: InputFieldPlusTextWidget(
+                                        text: 'Total Amount', 
+                                        textController: TextEditingController(),
+                                        myHintText: productController.sellProductTotalAmount.toString(),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+                              SizedBox(height: Dimensions.size15),
+                              // Current Date & Time from our Product Controller using DateTime
+                              Row(
+                                children: [
+                                    Expanded(
+                                    child: AbsorbPointer(
+                                      child: InputFieldPlusTextWidget(
+                                        text: 'Time', 
+                                        textController: TextEditingController(), 
+                                        myHintText: productController.myTime.value,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: Dimensions.size10),
+                                  // SELECT COLOR
+                                  Expanded(
+                                    child: AbsorbPointer(
+                                      child: InputFieldPlusTextWidget(
+                                        text: 'Date', 
+                                        textController: TextEditingController(),
+                                        myHintText: productController.myDate.value,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: Dimensions.size15),                                        
+                              // Who is Selling?
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: AbsorbPointer(
+                                      child: InputFieldPlusTextWidget(
+                                        text: 'Sold By', 
+                                        textController: TextEditingController(),
+                                        myHintText: authController.getCurrentUser()!.email,
+                                      ),
+                                    ),
+                                  ),                                
+                                ],
+                              ),                                    
                             ],
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.size15),
-                        // Unit & Shape 
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Unit', textController: unitController, isItForNumber: true),
-                            ),
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Shape', textController: shapeController),
-                            ),
-                          ],
-                        ),              
-                        SizedBox(height: Dimensions.size15),
-                        // Size & Type
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Size', textController: sizeController),
-                            ),
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Type', textController: typeController),
-                            ),
-                          ],
-                        ),  
-                        SizedBox(height: Dimensions.size15),            
-                        // Size & Type
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Size', textController: sizeController),
-                            ),
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Type', textController: typeController),
-                            ),
-                          ],
-                        ), 
-                        SizedBox(height: Dimensions.size15),             
-                        // Material & Length
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Material', textController: materialController),
-                            ),
-                            Expanded(
-                              child: InputFieldPlusTextWidget(text: 'Length', textController: lengthController),
-                            ),
-                          ],
-                        ), 
-                        SizedBox(height: Dimensions.size25),
-                        // The ADD button Here 
-                        MainButton(
-                          text: 'SELL',
-                          onPressed: () {
-                            print('Sell A Product');
-                          },                         
-                        ), 
-                        SizedBox(height: Dimensions.size30),        
-                      ],
-                    ),
+                          );
+                        }
+                      ),                       
+                      SizedBox(height: Dimensions.size25),
+                      // The ADD button Here 
+                      MainButton(
+                        text: 'SELL',
+                        onPressed: () {                                                    
+                          //if unit is not equal to zero 
+                          if(unitSoldController.text.trim()=='0' || unitSoldController.text.trim()=='0.0'){
+                            UserFeedBack.showError('You cannot sell this product unless you add at least 1 unit of it. Provide a value in the unit section');
+                            return;
+                          } 
+
+                          if(widget.product.unitAvailable < 1){
+                            UserFeedBack.showError('Sorry, you are out of stock');
+                            return;
+                          }
+                          // if form is valid i.e is unit is supplied, then go on to add the product to the Database                    
+                          if(sellProdFormKey.currentState!.validate()){                                                     
+                            // getting confirmation from the user
+                            UserFeedBack.showConfirmation(
+                              onConfirm: (){
+                                Get.back();
+                                // Calling our function for Selling of Product (productController)                                
+                                productController.sellProductItem(
+                                  productModel: widget.product, 
+                                  unitSold: int.parse(unitSoldController.text.trim())
+                                );
+                              }, 
+                              confirmQuestion: 'You want to go on to sell this product?'
+                            );                            
+                          }                                                       
+                        },                         
+                      ), 
+                      SizedBox(height: Dimensions.size30), 
+                    ],
                   ),
                 ),
               ),

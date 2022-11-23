@@ -34,7 +34,7 @@ class UserModel {
     position = snapshot['position'],
     dateEmployed = snapshot['date_employed'],
     imageUrl = snapshot['image_url'],
-    mySales = snapshot['my_sales'];
+    mySales = snapshot['my_sales'] == null? [] : (snapshot['my_sales'] as List).map((e) => SalesModel.fromJson(e as Map<String, dynamic>)).toList();
 
 
 
@@ -47,7 +47,7 @@ class UserModel {
     position = json['position'],
     dateEmployed = json['date_employed'],
     imageUrl = json['image_url'],
-    mySales = json['my_sales'];
+    mySales = json['my_sales'] == null? [] : (json['my_sales'] as List).map((e) => SalesModel.fromJson(e as Map<String, dynamic>)).toList();
 
 
   

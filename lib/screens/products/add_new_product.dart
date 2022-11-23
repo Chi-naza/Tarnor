@@ -145,6 +145,8 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
                               amount: amountController.text.trim(), 
                               colors: productColorList, 
                               unit: int.parse(unitController.text.trim()),
+                              unitSold: 0,
+                              unitAvailable: int.parse(unitController.text.trim()),
                               shape: shapeController.text.trim(), 
                               size: sizeController.text.trim(),
                               type: typeController.text.trim(),
