@@ -4,8 +4,8 @@ import 'package:tanor/app_constants/app_colors.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/app_constants/custom_text_styles.dart';
 import 'package:tanor/controllers/auth_controller.dart';
-import 'package:tanor/screens/products/add_new_product.dart';
-import 'package:tanor/screens/products/sell_a_product.dart';
+import 'package:tanor/screens/dashboard/see_my_sales_screen.dart';
+
 
 class HeaderWidget extends GetView<AuthController> {
   final bool isSecondHeader;
@@ -15,6 +15,7 @@ class HeaderWidget extends GetView<AuthController> {
 
   @override
   Widget build(BuildContext context) {
+
     return Material(
       elevation: 2.0,
       color: Colors.white,
@@ -43,7 +44,7 @@ class HeaderWidget extends GetView<AuthController> {
                       ),
                       // Name
                       Text(
-                        'CHIDIMMA',
+                        controller.currentUserData.firstName.toUpperCase(), // name at header
                         style: headline3.copyWith(color: AppColors.mainTextColor2),
                       ),
                     ],
@@ -52,17 +53,23 @@ class HeaderWidget extends GetView<AuthController> {
               ),
             Row(
               children: [
-                CircleAvatar(
-                  radius: Dimensions.size20*1.4,
-                  backgroundImage: AssetImage('lib/assets/images/avatar.png'),
-                  // foregroundImage: ,
+                Obx(() {
+                    return CircleAvatar(
+                      radius: Dimensions.size20*1.4,
+                      backgroundImage: const AssetImage('lib/assets/images/avatar.png'),
+                      foregroundImage: NetworkImage(controller.usersProfileImage.value),
+                    );
+                  }
                 ),             
                 PopupMenuButton<int>(
                   color: const Color(0xFFFAF4F4),
                   elevation: 2,
                   onSelected: ((value) {
                     if(value == 1){
-                      print('Clicked on Notifications');                     
+                      print('Clicked on MySales'); 
+                      //See my Sales   
+                      Get.to(SeeMySalesScreen(user: controller.currentUserData));
+                      controller.getCurrentUserDetails();              
                     }else if(value == 2){
                       // calling logOut function
                       controller.signOutUser();                      
@@ -75,9 +82,9 @@ class HeaderWidget extends GetView<AuthController> {
                         value: 1,
                         child: Row(
                         children: [
-                          const Icon(Icons.notifications),
+                          const Icon(Icons.stacked_line_chart_rounded),
                           SizedBox(width: Dimensions.size5),
-                          const Text("Notification"),
+                          const Text("My Sales"),
                         ]),
                       ),
                       // Logout

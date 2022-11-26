@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tanor/app_constants/app_colors.dart';
 import 'package:tanor/app_constants/custom_text_styles.dart';
+import 'package:tanor/controllers/auth_controller.dart';
 import 'package:tanor/screens/dashboard/admin.dart';
 import 'package:tanor/screens/dashboard/staff_list_screen.dart';
 import 'package:tanor/screens/products/inventory_list_screen.dart';
@@ -26,6 +28,9 @@ class _TanorHomeScreenState extends State<TanorHomeScreen> {
     const SettingsScreen()
   ];
 
+  // instance of authController
+  AuthController _authController = Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +44,7 @@ class _TanorHomeScreenState extends State<TanorHomeScreen> {
           setState(() {
             pageIndex = index;
           });
+          
         },
         items:  const [
           BottomNavigationBarItem(

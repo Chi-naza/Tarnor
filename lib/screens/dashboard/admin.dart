@@ -4,11 +4,13 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tanor/app_constants/app_colors.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/app_constants/custom_text_styles.dart';
+import 'package:tanor/controllers/auth_controller.dart';
 import 'package:tanor/controllers/product_controller.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/lists/chart_filter_list.dart';
 import 'package:tanor/custom_widgets/lists/product_item_widget.dart';
 import 'package:tanor/models/chart_model.dart';
+import 'package:tanor/screens/dashboard/admin_total_income.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -57,194 +59,221 @@ class _AdminScreenState extends State<AdminScreen> {
   // instance of product controller
   ProductController _productController = Get.find<ProductController>();
 
+  // instance of auth controller
+  var authController = Get.find<AuthController>();
+
+  @override
+  void initState() {
+    if(authController.currentUserData == null){
+      authController.getCurrentUserDetails();
+    }
+    super.initState();
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const HeaderWidget(isSecondHeader: true),
-            SizedBox(height: Dimensions.size25),
-            Text(
-              "Sales Summary",
-              style: headline4.copyWith(color: AppColors.tarnorTextColor),
-            ),
-            SizedBox(height: Dimensions.size20),
-            // Charts area
-            Material(
-              color: AppColors.mainTextColor3.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(Dimensions.size15),            
-              child: SizedBox(
-                width: Dimensions.screenWidth*0.95,
-                height: Dimensions.size100*3,
-                child: Column(
-                  children: [
-                    // List of Chart filters : daily, weekly, monthly & yearly
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: Dimensions.size10),
-                      padding: EdgeInsets.symmetric(horizontal: Dimensions.size10),
-                      height: Dimensions.size30,
-                      child: ListView.separated(
-                        itemCount: ChartFilterList.chartFilter.length,
-                        scrollDirection: Axis.horizontal,
-                        separatorBuilder: ((context, index) => SizedBox(width: Dimensions.size5)),
-                        itemBuilder: ((context, index) {
-                          var filterText = ChartFilterList.chartFilter[index]['filter'];
-                          var list = ChartFilterList.chartFilter[index];
-                          return ChartFilterList(
-                            onTap: (){
-                              setState(() {
-                                // deselecting previoulsy selected filter by setting their booleans to false: 
-                                // Using for loop
-                                for(var a in ChartFilterList.chartFilter){
-                                 if(a['selected'] == true){
-                                  a['selected'] = false;
-                                 } 
-                                }
-                                // Setting the current index to selected True onTap
-                                list['selected'] = !list['selected'];                                
-                              });
-                            }, 
-                            filterText: filterText, 
-                            isSelected: list['selected'],
-                          );
-                        }), 
-                      ),
-                    ),
-                    // The Bar Chart from SyncFusion 
-                    // DAILY
-                    if(ChartFilterList.chartFilter[0]['selected'])
-                      Expanded(
-                        child: SfCartesianChart(
-                          primaryXAxis: CategoryAxis(),
-                          series: [
-                            StackedColumnSeries(
-                              borderRadius: BorderRadius.circular(Dimensions.size3),
-                              color: AppColors.mainTextColor3.withOpacity(0.8),
-                              dataSource: dailyChart, 
-                              xValueMapper: (DailyChartModel d, _) => d.day, 
-                              yValueMapper: (DailyChartModel d, _) => d.value,
-                            ),
-                          ],
-                        ),
-                      ),
-                    // WEEKLY
-                    if(ChartFilterList.chartFilter[1]['selected'])
-                      Expanded(
-                        child: SfCartesianChart(
-                          primaryXAxis: CategoryAxis(),
-                          series: [
-                            StackedColumnSeries(
-                              borderRadius: BorderRadius.circular(Dimensions.size3),
-                              color: AppColors.mainTextColor3.withOpacity(0.8),
-                              dataSource: weeklyChart, 
-                              xValueMapper: (WeeklyChartModel w, _) => w.week, 
-                              yValueMapper: (WeeklyChartModel w, _) => w.value,
-                            ),
-                          ],
-                        ),
-                      ),
-                    // MONTHLY
-                    if(ChartFilterList.chartFilter[2]['selected'])
-                      Expanded(
-                        child: SfCartesianChart(
-                          primaryXAxis: CategoryAxis(),
-                          series: [
-                            StackedColumnSeries(
-                              borderRadius: BorderRadius.circular(Dimensions.size3),
-                              color: AppColors.mainTextColor3.withOpacity(0.8),
-                              dataSource: monthlyChart, 
-                              xValueMapper: (MonthlyChartModel m, _) => m.month, 
-                              yValueMapper: (MonthlyChartModel m, _) => m.value,
-                            ),
-                          ],
-                        ),
-                      ),
-                    // YEARLY
-                    if(ChartFilterList.chartFilter[3]['selected'])
-                      Expanded(
-                        child: SfCartesianChart(
-                          primaryXAxis: CategoryAxis(),
-                          series: [
-                            StackedColumnSeries(
-                              borderRadius: BorderRadius.circular(Dimensions.size3),
-                              color: AppColors.mainTextColor3.withOpacity(0.8),
-                              dataSource: yearlyChart, 
-                              xValueMapper: (YearlyChartModel y, _) => y.year, 
-                              yValueMapper: (YearlyChartModel y, _) => y.value,
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
+      // checking if data is being fetched, if null, show circularProgressIndicator
+      // if not null, check if user has made any sell, 
+      body: Obx(() {
+          return authController.isLoading.value? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
+            child: authController.currentUserData.isStaff? Center(
+              child: Container( 
+                margin: EdgeInsets.only(top: Dimensions.screenHeight*0.5),           
+                child: Text(
+                  'Only the Admin can see this screen',
+                  style: headline5,
                 ),
               ),
-            ),
-            SizedBox(height: Dimensions.size30),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.size15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'SALES TODAY',
-                    style: headline5.copyWith(fontWeight: FontWeight.bold, color: AppColors.tarnorFadeTextColor, letterSpacing: 1),
+            ) : Column(
+              children: [
+                const HeaderWidget(isSecondHeader: true),
+                SizedBox(height: Dimensions.size25),
+                Text(
+                  "Sales Summary",
+                  style: headline4.copyWith(color: AppColors.tarnorTextColor),
+                ),
+                SizedBox(height: Dimensions.size20),
+                // Charts area
+                Material(
+                  color: AppColors.mainTextColor3.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(Dimensions.size15),            
+                  child: SizedBox(
+                    width: Dimensions.screenWidth*0.95,
+                    height: Dimensions.size100*3,
+                    child: Column(
+                      children: [
+                        // List of Chart filters : daily, weekly, monthly & yearly
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: Dimensions.size10),
+                          padding: EdgeInsets.symmetric(horizontal: Dimensions.size10),
+                          height: Dimensions.size30,
+                          child: ListView.separated(
+                            itemCount: ChartFilterList.chartFilter.length,
+                            scrollDirection: Axis.horizontal,
+                            separatorBuilder: ((context, index) => SizedBox(width: Dimensions.size5)),
+                            itemBuilder: ((context, index) {
+                              var filterText = ChartFilterList.chartFilter[index]['filter'];
+                              var list = ChartFilterList.chartFilter[index];
+                              return ChartFilterList(
+                                onTap: (){
+                                  setState(() {
+                                    // deselecting previoulsy selected filter by setting their booleans to false: 
+                                    // Using for loop
+                                    for(var a in ChartFilterList.chartFilter){
+                                     if(a['selected'] == true){
+                                      a['selected'] = false;
+                                     } 
+                                    }
+                                    // Setting the current index to selected True onTap
+                                    list['selected'] = !list['selected'];                                
+                                  });
+                                }, 
+                                filterText: filterText, 
+                                isSelected: list['selected'],
+                              );
+                            }), 
+                          ),
+                        ),
+                        // The Bar Chart from SyncFusion 
+                        // DAILY
+                        if(ChartFilterList.chartFilter[0]['selected'])
+                          Expanded(
+                            child: SfCartesianChart(
+                              primaryXAxis: CategoryAxis(),
+                              series: [
+                                StackedColumnSeries(
+                                  borderRadius: BorderRadius.circular(Dimensions.size3),
+                                  color: AppColors.mainTextColor3.withOpacity(0.8),
+                                  dataSource: dailyChart, 
+                                  xValueMapper: (DailyChartModel d, _) => d.day, 
+                                  yValueMapper: (DailyChartModel d, _) => d.value,
+                                ),
+                              ],
+                            ),
+                          ),
+                        // WEEKLY
+                        if(ChartFilterList.chartFilter[1]['selected'])
+                          Expanded(
+                            child: SfCartesianChart(
+                              primaryXAxis: CategoryAxis(),
+                              series: [
+                                StackedColumnSeries(
+                                  borderRadius: BorderRadius.circular(Dimensions.size3),
+                                  color: AppColors.mainTextColor3.withOpacity(0.8),
+                                  dataSource: weeklyChart, 
+                                  xValueMapper: (WeeklyChartModel w, _) => w.week, 
+                                  yValueMapper: (WeeklyChartModel w, _) => w.value,
+                                ),
+                              ],
+                            ),
+                          ),
+                        // MONTHLY
+                        if(ChartFilterList.chartFilter[2]['selected'])
+                          Expanded(
+                            child: SfCartesianChart(
+                              primaryXAxis: CategoryAxis(),
+                              series: [
+                                StackedColumnSeries(
+                                  borderRadius: BorderRadius.circular(Dimensions.size3),
+                                  color: AppColors.mainTextColor3.withOpacity(0.8),
+                                  dataSource: monthlyChart, 
+                                  xValueMapper: (MonthlyChartModel m, _) => m.month, 
+                                  yValueMapper: (MonthlyChartModel m, _) => m.value,
+                                ),
+                              ],
+                            ),
+                          ),
+                        // YEARLY
+                        if(ChartFilterList.chartFilter[3]['selected'])
+                          Expanded(
+                            child: SfCartesianChart(
+                              primaryXAxis: CategoryAxis(),
+                              series: [
+                                StackedColumnSeries(
+                                  borderRadius: BorderRadius.circular(Dimensions.size3),
+                                  color: AppColors.mainTextColor3.withOpacity(0.8),
+                                  dataSource: yearlyChart, 
+                                  xValueMapper: (YearlyChartModel y, _) => y.year, 
+                                  yValueMapper: (YearlyChartModel y, _) => y.value,
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                  // Row for Sort
-                  Row(
+                ),
+                SizedBox(height: Dimensions.size30),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.size15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Sort',
-                        style: headline5.copyWith(fontWeight: FontWeight.bold, color: AppColors.tarnorFadeTextColor),
+                        'SALES TODAY',
+                        style: headline5.copyWith(fontWeight: FontWeight.bold, color: AppColors.tarnorFadeTextColor, letterSpacing: 1),
                       ),
-                      SizedBox(width: Dimensions.size3),
-                      Icon(
-                        Icons.sync_alt_outlined,
-                        size: Dimensions.size18,
-                        color: AppColors.tarnorFadeTextColor,
+                      // Row for Sort
+                      Row(
+                        children: [
+                          Text(
+                            'Sort',
+                            style: headline5.copyWith(fontWeight: FontWeight.bold, color: AppColors.tarnorFadeTextColor),
+                          ),
+                          SizedBox(width: Dimensions.size3),
+                          Icon(
+                            Icons.sync_alt_outlined,
+                            size: Dimensions.size18,
+                            color: AppColors.tarnorFadeTextColor,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.size10),
+                  child: Divider(height: Dimensions.size9, thickness: 2.5),
+                ),
+                // LIST OF ALL SALES
+                Container(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: _productController.allSalesDataList.length,     
+                    physics: const NeverScrollableScrollPhysics(),
+                    separatorBuilder: (context, index) =>  SizedBox(height: Dimensions.size9),   
+                    itemBuilder: (BuildContext, int index){
+                      var productSold = _productController.allSalesDataList[index];
+                      return  ProductItemWidget(
+                        productName: productSold.productName, // name
+                        time: '${productSold.time} ',
+                        date: productSold.date,
+                        price: '+${productSold.totalAmount}',
+                        quantity: productSold.unitSold.toString(), // quantity sold
+                      );
+                    }
+                  ),
+                ),
+                SizedBox(height: Dimensions.size100),
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.size10),
-              child: Divider(height: Dimensions.size9, thickness: 2.5),
-            ),
-            // LIST OF ALL SALES
-            Container(
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: _productController.allSalesDataList.length,     
-                physics: const NeverScrollableScrollPhysics(),
-                separatorBuilder: (context, index) =>  SizedBox(height: Dimensions.size9),   
-                itemBuilder: (BuildContext, int index){
-                  var productSold = _productController.allSalesDataList[index];
-                  return  ProductItemWidget(
-                    productName: productSold.productName, // name
-                    time: '${productSold.time} ',
-                    date: productSold.date,
-                    price: '+${productSold.totalAmount}',
-                    quantity: '',
-                  );
-                }
-              ),
-            ),
-            SizedBox(height: Dimensions.size30),
-          ],
-        ),
+          );
+        }
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   elevation: 3,
-      //   child: const Icon(Icons.add),
-      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.size10)),
-      //   onPressed: (){ 
-      //     print("pressed floating action button");
-      //   },
-      // ),
-      // bottomNavigationBar: const TanorBottomNavBar(),
+      floatingActionButton: authController.currentUserData.isStaff? null : FloatingActionButton.extended(
+        elevation: 3,
+        label: Text(
+          'See Total Icome',
+          style: headline5.copyWith(color: Colors.white),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.size10)),
+        onPressed: (){ 
+          Get.to(AdminTotalIcomeScreen());
+        },
+      ),
     );
   }
 }

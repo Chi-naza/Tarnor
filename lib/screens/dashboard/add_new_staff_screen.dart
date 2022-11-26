@@ -1,6 +1,9 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
+import 'package:tanor/controllers/auth_controller.dart';
 import 'package:tanor/custom_widgets/buttons/main_button.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/inputs/input_field_plus_text.dart';
@@ -26,8 +29,15 @@ class _AddNewStaffScreenState extends State<AddNewStaffScreen> {
   TextEditingController positionController = TextEditingController();
   TextEditingController imageController = TextEditingController();
 
+  // form key
+  var createStaffKey = GlobalKey<FormState>();
+
   // IMAGE UPLOAD
   PlatformFile? pickedImage;
+  UploadTask? uploadTask;
+
+  // instance of auth controller
+  var authController = Get.find<AuthController>();
 
 
   // function which prompts the user to select an image file
@@ -43,18 +53,22 @@ class _AddNewStaffScreenState extends State<AddNewStaffScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // setting this value to imageController to bypass validation
+    imageController.text = ' ';
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
             const HeaderWidget(),
-            const TextnDividerHeader(text: 'My Staff'),
+            const TextnDividerHeader(text: 'Create Staff'),
             // Form Section
             Container(
               padding: EdgeInsets.symmetric(horizontal: Dimensions.size5, vertical: Dimensions.size20),
               margin: EdgeInsets.symmetric(vertical: Dimensions.size30),
               child: Form(
+                key: createStaffKey,
                 child: Column(
                   children: [                    
                     Row(
@@ -73,7 +87,7 @@ class _AddNewStaffScreenState extends State<AddNewStaffScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: InputFieldPlusTextWidget(text: 'Email', textController: emailController),
+                          child: InputFieldPlusTextWidget(text: 'Email', textController: emailController, isEmail: true),
                         ),
                       ],
                     ),
@@ -81,10 +95,10 @@ class _AddNewStaffScreenState extends State<AddNewStaffScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: InputFieldPlusTextWidget(text: 'Password', textController: passwordController),
+                          child: InputFieldPlusTextWidget(text: 'Password', textController: passwordController, isPassword: true),
                         ),
                         Expanded(
-                          child: InputFieldPlusTextWidget(text: 'Re-Enter Password', textController: confirmPasswordController),
+                          child: InputFieldPlusTextWidget(text: 'Re-Enter Password', textController: confirmPasswordController, isPassword: true),
                         ),
                       ],
                     ),
@@ -92,7 +106,11 @@ class _AddNewStaffScreenState extends State<AddNewStaffScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: InputFieldPlusTextWidget(text: 'Phone Number', textController: phoneNumberController),
+                          child: InputFieldPlusTextWidget(
+                            text: 'Phone Number', 
+                            textController: phoneNumberController,
+                            isItForNumber: true,
+                          ),
                         ),
                       ],
                     ),
@@ -130,7 +148,40 @@ class _AddNewStaffScreenState extends State<AddNewStaffScreen> {
                       ),
                     // The Create Button
                     MainButton(
-                      onPressed: () => UserFeedBack.showSuccess('Successfully created a new staff, try to be cheerful now'),
+                      onPressed: () {
+                        // checking if the pswd1 and pswd2 matches 
+                        if(passwordController.text.trim() != confirmPasswordController.text.trim()){
+                          UserFeedBack.showError('Password Mismatch');
+                          return;
+                        }
+
+                       // Has image been picked?
+                       if(pickedImage == null){
+                        UserFeedBack.showError('You have not selected any image. Simply tap on the "Upload Image" field to select an image file');
+                       }else{
+                          // checking if form is valid
+                          if(createStaffKey.currentState!.validate()){
+                            UserFeedBack.showConfirmation(
+                              onConfirm: (){
+                                // pop off the confirm dialog
+                                Get.back();
+                                // call the create Staff function
+                                authController.createNewStaff(
+                                  emailController.text.trim(), 
+                                  passwordController.text.trim(),
+                                  firstNameController.text.trim(), 
+                                  surnameController.text.trim(), 
+                                  phoneNumberController.text.trim(), 
+                                  positionController.text.trim(),
+                                  pickedImage!,
+                                  uploadTask!,
+                                );
+                              }, 
+                              confirmQuestion: 'Create New Staff Profile?'
+                            );
+                          }
+                       }
+                      },
                       text: 'Create',
                     ),
                   ],

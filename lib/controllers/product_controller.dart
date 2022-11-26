@@ -171,6 +171,7 @@ class ProductController extends GetxController{
         {
           'unit' : addedUnit + product.unitAvailable,
           'unit_available' : product.unitAvailable + addedUnit,
+          'unit_sold' : 0
         }
       );
       // little delay before getting updated products from our DB
@@ -187,6 +188,26 @@ class ProductController extends GetxController{
      UserFeedBack.showError('Restock operation failed. Try Again !'); 
     }
   }
+
+
+
+
+
+// Processing the product inside the staff sales model
+ProductModel processSpecificProductsSold(SalesModel mySale) {
+  // Serializing the product data in staff's specific sales
+  // first: converting it from Map<dynamic, dynamic> to Map<String, dynamic>
+  Map<String, dynamic> renewedMap = {};
+  // looping through the product Map gotten online and restructuring it into Map<String, dynamic>
+  mySale.product.forEach((key, value) { 
+    renewedMap[key] = value;
+  });
+  
+  // Serializing the renewedMap 
+  ProductModel productData = ProductModel.fromJson(renewedMap);  
+
+  return productData;  
+}
 
 
 

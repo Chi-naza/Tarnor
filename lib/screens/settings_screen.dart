@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/lists/staff_row_widget.dart';
 import 'package:tanor/custom_widgets/texts/text_n_divider_header.dart';
+import 'package:tanor/screens/auth_screens/update_profile_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -25,8 +27,10 @@ class SettingsScreen extends StatelessWidget {
                 SizedBox(height: Dimensions.size5),
                 // Password
                 InkWell(
-                  onTap: (){},
-                  child: StaffRowWidget(text: 'Password'),
+                  onTap: (){
+                    Get.to(const UpdateProfileScreen());
+                  },
+                  child: StaffRowWidget(text: 'Update Profile Image'),
                 ),
                 // Separator
                 Column(

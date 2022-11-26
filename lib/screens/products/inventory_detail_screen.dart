@@ -51,8 +51,8 @@ class InventoryDetailScreen extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.size10),            
             Container(
-              padding: EdgeInsets.all(Dimensions.size25),
-              color: Colors.white.withOpacity(0.2),
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.size5, vertical: Dimensions.size20),
+              color: Color.fromRGBO(255, 255, 255, 1).withOpacity(0.2),
               child: Row(
                 children: [
                   // Circular Rating Bar
@@ -69,6 +69,7 @@ class InventoryDetailScreen extends StatelessWidget {
                       animationDuration: 2400,
                     ),
                   ),
+                  SizedBox(width: Dimensions.size5),
                   // column of items beside the circular rating bar
                   Expanded(
                     child: Column(

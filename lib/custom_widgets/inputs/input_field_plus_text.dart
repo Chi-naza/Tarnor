@@ -8,8 +8,19 @@ class InputFieldPlusTextWidget extends StatelessWidget {
   final bool isItForNumber;
   final String? myHintText;
   final Function(String value)? onChanged;
+  final bool isEmail;
+  final bool isPassword;
   
-  const InputFieldPlusTextWidget({Key? key, required this.text, required this.textController, this.isItForNumber = false, this.myHintText, this.onChanged}) : super(key: key);
+  const InputFieldPlusTextWidget({
+    Key? key, 
+    required this.text, 
+    required this.textController, 
+    this.isItForNumber = false, 
+    this.myHintText, 
+    this.onChanged, 
+    this.isEmail = false,
+    this.isPassword = false
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +43,27 @@ class InputFieldPlusTextWidget extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: Dimensions.size10, horizontal: Dimensions.size10),                   
           child: TextFormField(
             autocorrect: true,
+            obscureText: isPassword? true : false,
             controller: textController,
             keyboardType: isItForNumber? TextInputType.number : TextInputType.text,
-            onChanged: onChanged,
+            onChanged: onChanged,    
             validator: ((value) {
-              if(value!.isEmpty){
-                return 'Provide a value';
-              }else{
-                return null;
+              if(!isEmail){
+                if(value!.isEmpty){
+                  return 'Provide a value';
+                }else{
+                  return null;
+                }
+              }
+
+              if(isEmail){
+                if(value!.isEmpty){
+                  return 'Email field is empty. Provide your email';
+                }else if(!value.contains('@') || !value.contains('.')){
+                  return 'Invalid email address';
+                }else{
+                  return null;
+                }
               }
             }),
             decoration: InputDecoration(      
