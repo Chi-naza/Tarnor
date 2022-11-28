@@ -1,4 +1,4 @@
-# tarnor
+# Tarnor
 
 An Inventory App Written in Flutter
 
