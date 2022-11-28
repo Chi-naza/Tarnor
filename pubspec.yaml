@@ -41,14 +41,9 @@ dependencies:
   firebase_auth: ^4.0.2
   firebase_storage: ^11.0.5
   intl: ^0.17.0
-  # firebase_dynamic_links: ^5.0.2 
+  money_formatter: ^0.0.3
 
-  # unsound plugins
-  # charts_flutter: ^0.10.0 
-  # charts_flutter:
-  #   git:
-  #     url: git://github.com/google/charts.git
-  #     path: charts_flutter
+  
 
 dev_dependencies:
   flutter_test:

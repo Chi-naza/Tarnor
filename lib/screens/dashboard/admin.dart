@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -5,15 +6,20 @@ import 'package:tanor/app_constants/app_colors.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/app_constants/custom_text_styles.dart';
 import 'package:tanor/controllers/auth_controller.dart';
+import 'package:tanor/controllers/chart_controller.dart';
 import 'package:tanor/controllers/product_controller.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
-import 'package:tanor/custom_widgets/lists/chart_filter_list.dart';
+import 'package:tanor/custom_widgets/lists/chart_filter_card.dart';
 import 'package:tanor/custom_widgets/lists/product_item_widget.dart';
 import 'package:tanor/models/chart_model.dart';
+import 'package:tanor/models/sales_model.dart';
 import 'package:tanor/screens/dashboard/admin_total_income.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
+
+  static const String routeName = '/admin';
+    
 
   @override
   State<AdminScreen> createState() => _AdminScreenState();
@@ -21,58 +27,44 @@ class AdminScreen extends StatefulWidget {
 
 class _AdminScreenState extends State<AdminScreen> {
 
-  bool isChartFilterSelected = false;
-
-  final List<DailyChartModel> dailyChart = [
-    DailyChartModel(day: 'Monday', value: 30),
-    DailyChartModel(day: 'Tuesday', value: 5),
-    DailyChartModel(day: 'Wednesday', value: 90),
-    DailyChartModel(day: 'Thursday', value: 50),
-    DailyChartModel(day: 'Friday', value: 30)
-  ];
-
-  final List<WeeklyChartModel> weeklyChart = [
-    WeeklyChartModel(week: '1st Week', value: 67),
-    WeeklyChartModel(week: '2nd Week', value: 20),
-    WeeklyChartModel(week: '3rd Week', value: 100),
-    WeeklyChartModel(week: '4th Week', value: 40),
-    WeeklyChartModel(week: '5th Week', value: 80),
-  ];
-
-  final List<MonthlyChartModel> monthlyChart = [
-    MonthlyChartModel(month: 'Jan', value: 10),
-    MonthlyChartModel(month: 'Feb', value: 50),
-    MonthlyChartModel(month: 'March', value: 77),
-    MonthlyChartModel(month: 'April', value: 30),
-    MonthlyChartModel(month: 'June', value: 60),
-  ];
-
-  final List<YearlyChartModel> yearlyChart = [
-    YearlyChartModel(year: '2017', value: 40),
-    YearlyChartModel(year: '2018', value: 60),
-    YearlyChartModel(year: '2019', value: 90),
-    YearlyChartModel(year: '2020', value: 21),
-    YearlyChartModel(year: '2021', value: 59),
-  ];
-
-
   // instance of product controller
   ProductController _productController = Get.find<ProductController>();
 
   // instance of auth controller
   var authController = Get.find<AuthController>();
 
+  // instance of chartController
+  late ChartController chartController;
+
+  // Dropdown list
+  var sortDropDownList = ['Today', 'Last Week', 'Last Month'];
+  String currentSort = 'Today';
+
+  // The dynamic salesList which changes based on sort
+  final sortedSalesList = <SalesModel>[].obs;
+
   @override
   void initState() {
+    // injecting chartController
+    chartController = Get.put(ChartController());
+
+    // Getting today's sales
+    chartController.getPrevDay(0);
+    sortedSalesList.value = chartController.dailySalesList;
+
     if(authController.currentUserData == null){
       authController.getCurrentUserDetails();
     }
-    super.initState();
-    
+
+    super.initState(); 
+
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       // checking if data is being fetched, if null, show circularProgressIndicator
@@ -111,18 +103,18 @@ class _AdminScreenState extends State<AdminScreen> {
                           padding: EdgeInsets.symmetric(horizontal: Dimensions.size10),
                           height: Dimensions.size30,
                           child: ListView.separated(
-                            itemCount: ChartFilterList.chartFilter.length,
+                            itemCount: ChartFilterListCard.chartFilter.length,
                             scrollDirection: Axis.horizontal,
                             separatorBuilder: ((context, index) => SizedBox(width: Dimensions.size5)),
                             itemBuilder: ((context, index) {
-                              var filterText = ChartFilterList.chartFilter[index]['filter'];
-                              var list = ChartFilterList.chartFilter[index];
-                              return ChartFilterList(
+                              var filterText = ChartFilterListCard.chartFilter[index]['filter'];
+                              var list = ChartFilterListCard.chartFilter[index];
+                              return ChartFilterListCard(
                                 onTap: (){
                                   setState(() {
                                     // deselecting previoulsy selected filter by setting their booleans to false: 
                                     // Using for loop
-                                    for(var a in ChartFilterList.chartFilter){
+                                    for(var a in ChartFilterListCard.chartFilter){
                                      if(a['selected'] == true){
                                       a['selected'] = false;
                                      } 
@@ -139,7 +131,7 @@ class _AdminScreenState extends State<AdminScreen> {
                         ),
                         // The Bar Chart from SyncFusion 
                         // DAILY
-                        if(ChartFilterList.chartFilter[0]['selected'])
+                        if(ChartFilterListCard.chartFilter[0]['selected'])
                           Expanded(
                             child: SfCartesianChart(
                               primaryXAxis: CategoryAxis(),
@@ -147,7 +139,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 StackedColumnSeries(
                                   borderRadius: BorderRadius.circular(Dimensions.size3),
                                   color: AppColors.mainTextColor3.withOpacity(0.8),
-                                  dataSource: dailyChart, 
+                                  dataSource: chartController.dailyChart, 
                                   xValueMapper: (DailyChartModel d, _) => d.day, 
                                   yValueMapper: (DailyChartModel d, _) => d.value,
                                 ),
@@ -155,7 +147,7 @@ class _AdminScreenState extends State<AdminScreen> {
                             ),
                           ),
                         // WEEKLY
-                        if(ChartFilterList.chartFilter[1]['selected'])
+                        if(ChartFilterListCard.chartFilter[1]['selected'])
                           Expanded(
                             child: SfCartesianChart(
                               primaryXAxis: CategoryAxis(),
@@ -163,7 +155,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 StackedColumnSeries(
                                   borderRadius: BorderRadius.circular(Dimensions.size3),
                                   color: AppColors.mainTextColor3.withOpacity(0.8),
-                                  dataSource: weeklyChart, 
+                                  dataSource: chartController.weeklyChart,
                                   xValueMapper: (WeeklyChartModel w, _) => w.week, 
                                   yValueMapper: (WeeklyChartModel w, _) => w.value,
                                 ),
@@ -171,7 +163,7 @@ class _AdminScreenState extends State<AdminScreen> {
                             ),
                           ),
                         // MONTHLY
-                        if(ChartFilterList.chartFilter[2]['selected'])
+                        if(ChartFilterListCard.chartFilter[2]['selected'])
                           Expanded(
                             child: SfCartesianChart(
                               primaryXAxis: CategoryAxis(),
@@ -179,7 +171,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 StackedColumnSeries(
                                   borderRadius: BorderRadius.circular(Dimensions.size3),
                                   color: AppColors.mainTextColor3.withOpacity(0.8),
-                                  dataSource: monthlyChart, 
+                                  dataSource: chartController.monthlyChart,
                                   xValueMapper: (MonthlyChartModel m, _) => m.month, 
                                   yValueMapper: (MonthlyChartModel m, _) => m.value,
                                 ),
@@ -187,7 +179,7 @@ class _AdminScreenState extends State<AdminScreen> {
                             ),
                           ),
                         // YEARLY
-                        if(ChartFilterList.chartFilter[3]['selected'])
+                        if(ChartFilterListCard.chartFilter[3]['selected'])
                           Expanded(
                             child: SfCartesianChart(
                               primaryXAxis: CategoryAxis(),
@@ -195,7 +187,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 StackedColumnSeries(
                                   borderRadius: BorderRadius.circular(Dimensions.size3),
                                   color: AppColors.mainTextColor3.withOpacity(0.8),
-                                  dataSource: yearlyChart, 
+                                  dataSource: chartController.yearlyChart,
                                   xValueMapper: (YearlyChartModel y, _) => y.year, 
                                   yValueMapper: (YearlyChartModel y, _) => y.value,
                                 ),
@@ -206,16 +198,17 @@ class _AdminScreenState extends State<AdminScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: Dimensions.size30),
+                SizedBox(height: Dimensions.size40),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Dimensions.size15),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'SALES TODAY',
+                        'SALES',//'SALES TODAY',
                         style: headline5.copyWith(fontWeight: FontWeight.bold, color: AppColors.tarnorFadeTextColor, letterSpacing: 1),
                       ),
+                      SizedBox(width: Dimensions.size100),
                       // Row for Sort
                       Row(
                         children: [
@@ -231,6 +224,65 @@ class _AdminScreenState extends State<AdminScreen> {
                           ),
                         ],
                       ),
+                      SizedBox(width: Dimensions.size10),
+                      // DropDownMenu for sorting the list
+                      Expanded(
+                        child: DecoratedBox(                          
+                          decoration: BoxDecoration( 
+                            color:Colors.white, //background color of dropdown button
+                            border: Border.all(color: Colors.grey.withOpacity(0.6), width:2), //border of dropdown button
+                            borderRadius: BorderRadius.circular(Dimensions.size30), //border raiuds of dropdown button
+                            boxShadow: const <BoxShadow>[ //apply shadow on Dropdown button
+                              BoxShadow(
+                                color: AppColors.tarnorCardColor, //shadow for button
+                                blurRadius: 2,
+                              ) //blur radius of shadow
+                            ]
+                          ),                        
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: Dimensions.size10),
+                            height: Dimensions.size30,
+                            child:DropdownButton(
+                              value: currentSort,
+                              items: sortDropDownList.map((item) {
+                                return DropdownMenuItem(
+                                  child: Text(item),
+                                  value: item,
+                                );
+                              }).toList(),
+                              onChanged: (String? value){ //get value when changed
+                                  setState(() {
+                                    currentSort = value!;
+                                    // Logic to filter sales based on the choice of user on the dropDown list
+                                    // it filters today's, last week's, and last month's sales
+                                    if(value == sortDropDownList[0]){
+                                      chartController.getPrevDay(0);
+                                      sortedSalesList.value = chartController.dailySalesList;
+                                      print(sortedSalesList);
+                                    }else if(value == sortDropDownList[1]){  
+                                      chartController.getPrevWeek(1);
+                                      sortedSalesList.value = chartController.weeklySalesList;
+                                      print(sortedSalesList);
+                                    }else if(value == sortDropDownList[2]){
+                                      chartController.getPrevMonth(0);
+                                      sortedSalesList.value = chartController.monthlySalesList;
+                                      print(sortedSalesList);
+                                    }                                    
+                                  });
+                              },
+                              icon: Padding( 
+                                padding: EdgeInsets.only(left: Dimensions.size5),
+                                child:Icon(Icons.arrow_circle_down_sharp)
+                              ), 
+                              iconEnabledColor: AppColors.tarnorFadeTextColor, //Icon color
+                              style: headline5.copyWith(color: AppColors.tarnorFadeTextColor),                    
+                              // dropdownColor: C, //dropdown background color
+                              underline: Container(), //remove underline
+                              isExpanded: true, //make true to make width 100%
+                            )
+                          )
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -238,25 +290,41 @@ class _AdminScreenState extends State<AdminScreen> {
                   padding: EdgeInsets.symmetric(horizontal: Dimensions.size10),
                   child: Divider(height: Dimensions.size9, thickness: 2.5),
                 ),
-                // LIST OF ALL SALES
-                Container(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: _productController.allSalesDataList.length,     
-                    physics: const NeverScrollableScrollPhysics(),
-                    separatorBuilder: (context, index) =>  SizedBox(height: Dimensions.size9),   
-                    itemBuilder: (BuildContext, int index){
-                      var productSold = _productController.allSalesDataList[index];
-                      return  ProductItemWidget(
-                        productName: productSold.productName, // name
-                        time: '${productSold.time} ',
-                        date: productSold.date,
-                        price: '+${productSold.totalAmount}',
-                        quantity: productSold.unitSold.toString(), // quantity sold
-                      );
-                    }
+                if(sortedSalesList.isNotEmpty)
+                  // LIST OF ALL SALES
+                  Container(
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: sortedSalesList.length,     
+                      physics: const NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) =>  SizedBox(height: Dimensions.size9),   
+                      itemBuilder: (BuildContext context, int index){
+                        
+                        var productSold = sortedSalesList[index];
+
+                        return ProductItemWidget(
+                          productName: productSold.productName, // name
+                          time: '${productSold.time} ',
+                          date: productSold.date,
+                          price: '+${productSold.totalAmount}',
+                          quantity: productSold.unitSold.toString(), // quantity sold
+                        );
+                      }
+                    ),
                   ),
-                ),
+                if(sortedSalesList.isEmpty)
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: Dimensions.size20),
+                    child: Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(Dimensions.size20),
+                        child: Text(
+                          'No Sales Yet',
+                          style: headline3.copyWith(color: AppColors.tarnorFadeTextColor),
+                        ),
+                      ),
+                    ),
+                  ),
                 SizedBox(height: Dimensions.size100),
               ],
             ),
@@ -272,6 +340,7 @@ class _AdminScreenState extends State<AdminScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.size10)),
         onPressed: (){ 
           Get.to(AdminTotalIcomeScreen());
+          // chartController.testChart();
         },
       ),
     );

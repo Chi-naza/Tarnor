@@ -248,6 +248,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "money_formatter",
+      "rootUri": "file:///C:/Users/USER/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/money_formatter-0.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "path",
       "rootUri": "file:///C:/Users/USER/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/path-1.8.2",
       "packageUri": "lib/",
@@ -404,7 +410,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-11-18T23:14:55.394806Z",
+  "generated": "2022-11-27T21:32:47.305128Z",
   "generator": "pub",
   "generatorVersion": "2.18.0"
 }
