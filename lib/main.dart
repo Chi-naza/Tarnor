@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:tanor/app_constants/routes.dart';
 import 'package:tanor/bindings/custom_bindings.dart';
 import 'package:tanor/firebase_options.dart';
-import 'package:tanor/screens/home/tarnor_home.dart';
-import 'package:tanor/screens/products/add_new_product.dart';
 import 'themes/mytheme.dart';
 
 
@@ -26,6 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(   
       theme: myThemes().mytheme,
+      debugShowCheckedModeBanner: false,
       getPages: Routes.tarnorRoutes,
       // home: AddNewProductScreen(),
     );

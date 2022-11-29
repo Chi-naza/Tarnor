@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/controllers/auth_controller.dart';
 import 'package:tanor/controllers/product_controller.dart';
