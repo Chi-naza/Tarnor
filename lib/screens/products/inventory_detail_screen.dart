@@ -4,6 +4,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:tanor/app_constants/app_colors.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/app_constants/custom_text_styles.dart';
+import 'package:tanor/controllers/product_controller.dart';
 import 'package:tanor/custom_widgets/buttons/main_button.dart';
 import 'package:tanor/custom_widgets/buttons/tanor_back_button.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
@@ -13,9 +14,12 @@ import 'package:tanor/screens/products/restock_product_screen.dart';
 import 'package:tanor/screens/products/sell_a_product.dart';
 
 class InventoryDetailScreen extends StatelessWidget {
+  
   final ProductModel productModel;
   
-  const InventoryDetailScreen({Key? key, required this.productModel}) : super(key: key);
+  InventoryDetailScreen({Key? key, required this.productModel}) : super(key: key);
+
+  ProductController productController = Get.find<ProductController>();
 
 
   @override
@@ -85,11 +89,11 @@ class InventoryDetailScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              "11,345,070",
+                              productController.totalCashgeneratedByProduct(productModel),//"11,345,070",  amount generated in all sales
                               style: headline2.copyWith(color: AppColors.mainTextColor3, fontSize: Dimensions.size25, letterSpacing: 1),
                             ),
                             Text(
-                              "+331,993",
+                              "+${productController.totalCashgeneratedByProductToday(productModel)}",//"+331,993", amount generated today
                               style: headline4.copyWith(color: AppColors.tarnorGreen, letterSpacing: 1),
                             ),
                           ],

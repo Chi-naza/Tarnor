@@ -41,16 +41,6 @@ class ChartController extends GetxController {
   }
 
 
-
-
-testChart(){
-  print(getPrevMonth(1)['month']);
-  monthlySalesList.value.forEach((e) { 
-    print("NAME: ${e.productName} , CREATED: ${e.dateCreated}, AMOUNT: ${e.totalAmount}");
-  });
-}
-
-
   // A function which gets the sales of the requested year according to the number inserted
   // yearBefore and yearAfter are the years before and after the requested year respectively.
   // we return all the sales that lies btw yearBefore and yearAfter. (using where() to filter  the allSales list)

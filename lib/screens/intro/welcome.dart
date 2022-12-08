@@ -26,7 +26,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       appBar: AppBar(        
         title: Text(
-          'Tanor App',
+          'Tarnor App',
           style: headline4,
         ),
         centerTitle: true,

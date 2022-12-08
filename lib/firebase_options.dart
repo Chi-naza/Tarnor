@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDfBalV6iVrZU5C1zkh3ikkbIxlnAlF_84',
-    appId: '1:1023002146889:android:d93a00453559a4ceb02798',
-    messagingSenderId: '1023002146889',
-    projectId: 'tarnor-9ee67',
-    storageBucket: 'tarnor-9ee67.appspot.com',
+    apiKey: 'AIzaSyCBTXVOfUmTyRTuqp4bq7-kvAggiZYfz7E',
+    appId: '1:938425882813:android:5288ec69ecb059e150bfd4',
+    messagingSenderId: '938425882813',
+    projectId: 'tarnor-48b0e',
+    storageBucket: 'tarnor-48b0e.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAcCYLGuNU9t27dRTXkNIIVHOmw9RPx8lo',
-    appId: '1:1023002146889:ios:9557973c1872bba2b02798',
-    messagingSenderId: '1023002146889',
-    projectId: 'tarnor-9ee67',
-    storageBucket: 'tarnor-9ee67.appspot.com',
-    iosClientId: '1023002146889-keoj5pih8cf2ggf7fo16m1qdsa4o8dn9.apps.googleusercontent.com',
+    apiKey: 'AIzaSyBEUqYjFmVl_xZtGmYPSvtyiEgj-KZJ8tA',
+    appId: '1:938425882813:ios:0aa694685d901c3c50bfd4',
+    messagingSenderId: '938425882813',
+    projectId: 'tarnor-48b0e',
+    storageBucket: 'tarnor-48b0e.appspot.com',
+    iosClientId: '938425882813-2kq47loee47k9ud543banlloh6arbllg.apps.googleusercontent.com',
     iosBundleId: 'com.example.tanor',
   );
 }

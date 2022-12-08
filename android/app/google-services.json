@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1023002146889",
-    "project_id": "tarnor-9ee67",
-    "storage_bucket": "tarnor-9ee67.appspot.com"
+    "project_number": "938425882813",
+    "project_id": "tarnor-48b0e",
+    "storage_bucket": "tarnor-48b0e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1023002146889:android:d93a00453559a4ceb02798",
+        "mobilesdk_app_id": "1:938425882813:android:5288ec69ecb059e150bfd4",
         "android_client_info": {
-          "package_name": "com.example.tanor"
+          "package_name": "com.nanocodes.Tarnor"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1023002146889-s8rbss4r637r6der804fro2t0ddi3k8t.apps.googleusercontent.com",
+          "client_id": "938425882813-2dccaje9spk12g5jq57udan8a92c5fat.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDfBalV6iVrZU5C1zkh3ikkbIxlnAlF_84"
+          "current_key": "AIzaSyCBTXVOfUmTyRTuqp4bq7-kvAggiZYfz7E"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1023002146889-s8rbss4r637r6der804fro2t0ddi3k8t.apps.googleusercontent.com",
+              "client_id": "938425882813-2dccaje9spk12g5jq57udan8a92c5fat.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
