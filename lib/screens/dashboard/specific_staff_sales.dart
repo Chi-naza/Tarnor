@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/lists/product_item_widget.dart';
 import 'package:tanor/custom_widgets/texts/text_n_divider_header.dart';
 import 'package:tanor/models/user_model.dart';
+import 'package:tanor/screens/dashboard/sold_product_info.dart';
 
 class SpecificStaffSalesScreen extends StatelessWidget {
   final UserModel specificStaff;
@@ -30,7 +32,8 @@ class SpecificStaffSalesScreen extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index){
                   var sale = specificStaff.mySales[index];                   
                   return  InkWell(
-                    onTap: (() {                     
+                    onTap: (() {
+                      Get.to(SoldProductInfoScreen(soldProduct: sale));                     
                     }),
                     child: ProductItemWidget(
                       productName: sale .productName, // name

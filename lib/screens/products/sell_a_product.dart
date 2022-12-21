@@ -23,10 +23,12 @@ class _SellAProductScreenState extends State<SellAProductScreen> {
 
    // input controllers
   TextEditingController unitSoldController = TextEditingController();
+  TextEditingController soldToWhoController = TextEditingController();
 
 
   // Form key
   var sellProdFormKey = GlobalKey<FormState>();
+  var soldToFormKey = GlobalKey<FormState>();
 
   // product controller instance
   ProductController productController = Get.find<ProductController>();
@@ -132,6 +134,21 @@ class _SellAProductScreenState extends State<SellAProductScreen> {
                                 ],
                               ),
                               SizedBox(height: Dimensions.size15),                                        
+                              // Sold To
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Form(
+                                      key: soldToFormKey,
+                                      child: InputFieldPlusTextWidget(
+                                        text: 'Sold To', 
+                                        textController: soldToWhoController,                                         
+                                      ),
+                                    ),
+                                  ),                        
+                                ],
+                              ),         
+                              SizedBox(height: Dimensions.size15),                                        
                               // Who is Selling?
                               Row(
                                 children: [
@@ -166,19 +183,24 @@ class _SellAProductScreenState extends State<SellAProductScreen> {
                             return;
                           }
                           // if form is valid i.e is unit is supplied, then go on to add the product to the Database                    
-                          if(sellProdFormKey.currentState!.validate()){                                                     
-                            // getting confirmation from the user
-                            UserFeedBack.showConfirmation(
-                              onConfirm: (){
-                                Get.back();
-                                // Calling our function for Selling of Product (productController)                                
-                                productController.sellProductItem(
-                                  productModel: widget.product, 
-                                  unitSold: int.parse(unitSoldController.text.trim())
-                                );
-                              }, 
-                              confirmQuestion: 'You want to go on to sell this product?'
-                            );                            
+                          if(sellProdFormKey.currentState!.validate() && soldToFormKey.currentState!.validate()){  
+                            if(widget.product.unitAvailable < int.parse(unitSoldController.text.trim())){
+                              UserFeedBack.showError('Insufficient number of units available. You cannot sell more than ${widget.product.unitAvailable} items of this product');
+                            }else{
+                              // getting confirmation from the user
+                              UserFeedBack.showConfirmation(
+                                onConfirm: (){
+                                  Get.back();
+                                  // Calling our function for Selling of Product (productController)                                
+                                  productController.sellProductItem(
+                                    productModel: widget.product, 
+                                    unitSold: int.parse(unitSoldController.text.trim()),
+                                    soldTo: soldToWhoController.text.trim()
+                                  );
+                                }, 
+                                confirmQuestion: 'You want to go on to sell this product?'
+                              );            
+                            }                                                                    
                           }                                                       
                         },                         
                       ), 

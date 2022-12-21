@@ -4,6 +4,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:tanor/app_constants/app_colors.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/app_constants/custom_text_styles.dart';
+import 'package:tanor/controllers/auth_controller.dart';
 import 'package:tanor/controllers/product_controller.dart';
 import 'package:tanor/custom_widgets/buttons/main_button.dart';
 import 'package:tanor/custom_widgets/buttons/tanor_back_button.dart';
@@ -20,6 +21,8 @@ class InventoryDetailScreen extends StatelessWidget {
   InventoryDetailScreen({Key? key, required this.productModel}) : super(key: key);
 
   ProductController productController = Get.find<ProductController>();
+
+  AuthController authController = Get.find<AuthController>();
 
 
   @override
@@ -198,13 +201,18 @@ class InventoryDetailScreen extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MainButton(
-                  onPressed: (){
-                    Get.to(ReStockProductScreen(product: productModel));
-                  }, 
-                  text: 'ReStock'
-                ),
-                SizedBox(height: Dimensions.size20),
+                if(!authController.currentUserData.isStaff)
+                Column(
+                  children: [
+                    MainButton(
+                      onPressed: (){
+                        Get.to(ReStockProductScreen(product: productModel));
+                      }, 
+                      text: 'ReStock'
+                    ),
+                    SizedBox(height: Dimensions.size20),
+                  ],
+                ),                
                 MainButton(
                   onPressed: (){
                     Get.to(SellAProductScreen(product: productModel));

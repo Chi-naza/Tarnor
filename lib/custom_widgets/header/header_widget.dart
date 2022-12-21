@@ -43,9 +43,13 @@ class HeaderWidget extends GetView<AuthController> {
                         style: headline5,
                       ),
                       // Name
-                      Text(
-                        controller.currentUserData.firstName.toUpperCase(), // name at header
-                        style: headline3.copyWith(color: AppColors.mainTextColor2),
+                      Container(
+                        width: Dimensions.size100*2,
+                        child: Text(
+                          controller.currentUserData.firstName.toUpperCase(), // name at header
+                          style: headline3.copyWith(color: AppColors.mainTextColor2),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),

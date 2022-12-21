@@ -1,15 +1,11 @@
 import 'package:get/get.dart';
-import 'package:tanor/controllers/chart_controller.dart';
-import 'package:tanor/screens/auth_screens/employeelogin.dart';
+import 'package:tanor/screens/auth_screens/login.dart';
 import 'package:tanor/screens/auth_screens/employerlogin.dart';
 import 'package:tanor/screens/auth_screens/register_screen.dart';
-import 'package:tanor/screens/dashboard/admin.dart';
-import 'package:tanor/screens/dashboard/admin_total_income.dart';
 import 'package:tanor/screens/home/tarnor_home.dart';
 import 'package:tanor/screens/intro/splash_screen.dart';
 import 'package:tanor/screens/intro/welcome.dart';
 import 'package:tanor/screens/products/add_new_product.dart';
-import 'package:tanor/screens/products/sell_a_product.dart';
 
 class Routes {
 
@@ -40,8 +36,8 @@ class Routes {
     ),
     // employee login screen
     GetPage(
-      name: EmployeeLoginScreen.routeName,
-      page: () => const EmployeeLoginScreen(),
+      name: LoginScreen.routeName,
+      page: () => const LoginScreen(),
       transition: Transition.fade,      
     ),
     // register screen

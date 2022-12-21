@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:tanor/models/sales_model.dart';
 import 'package:tanor/models/user_model.dart';
-import 'package:tanor/screens/auth_screens/employeelogin.dart';
+import 'package:tanor/screens/auth_screens/login.dart';
 import 'package:tanor/screens/home/tarnor_home.dart';
 import 'package:tanor/screens/intro/welcome.dart';
 import 'package:tanor/utilities/feedback.dart';
@@ -77,7 +77,7 @@ class AuthController extends GetxController {
 
 
   void goToLoginScreen(){
-    Get.offAllNamed(EmployeeLoginScreen.routeName);
+    Get.offAllNamed(LoginScreen.routeName);
   }
 
 

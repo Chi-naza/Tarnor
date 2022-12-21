@@ -10,6 +10,7 @@ class SalesModel {
   String time;  // eg 12:30:43 pm
   String date;  // eg 3 March 2022
   DateTime dateCreated;
+  String soldTo;
 
   SalesModel({
     required this.product,
@@ -20,6 +21,7 @@ class SalesModel {
     required this.time,
     required this.date,
     required this.dateCreated,
+    required this.soldTo
   });
 
 
@@ -32,7 +34,8 @@ class SalesModel {
     productName = snapshot['product_name'],
     time = snapshot['time'],
     date = snapshot['date'],
-    dateCreated = (snapshot['date_created'] as Timestamp).toDate();
+    dateCreated = (snapshot['date_created'] as Timestamp).toDate(),
+    soldTo = snapshot['sold_to'];
 
 
 
@@ -44,7 +47,8 @@ class SalesModel {
     productName = json['product_name'],
     time = json['time'],
     date = json['date'],
-    dateCreated = (json['date_created'] as Timestamp).toDate();
+    dateCreated = (json['date_created'] as Timestamp).toDate(),
+    soldTo = json['sold_to'];
 
 
   
@@ -57,7 +61,8 @@ class SalesModel {
     data['product_name'] = this.productName;
     data['time'] = this.time;
     data['date'] = this.date;
-    data['date_created'] = this.dateCreated; 
+    data['date_created'] = this.dateCreated;
+    data['sold_to'] = this.soldTo;
     return data;
   }
   

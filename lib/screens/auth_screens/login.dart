@@ -13,15 +13,15 @@ import 'package:tanor/screens/auth_screens/register_screen.dart';
 // import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 // final FirebaseAuth _auth = FirebaseAuth.instance;
 
-class EmployeeLoginScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   static const routeName = "/employeeloginpage";
-  const EmployeeLoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<EmployeeLoginScreen> createState() => _EmployeeLoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _EmployeeLoginScreenState extends State<EmployeeLoginScreen> {
+class _LoginScreenState extends State<LoginScreen> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -53,28 +53,28 @@ class _EmployeeLoginScreenState extends State<EmployeeLoginScreen> {
                 child: Image(image: AssetImage("lib/assets/images/logo.png")),
               ),
               SizedBox(width: double.infinity, height: Dimensions.size10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
                 
-                children: [
-                  InkWell(
-                    child: Text(
-                      "Employee", 
-                      style: headline4.copyWith(color: AppColors.mainTextColor2),
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.size5, height: Dimensions.size4),
-                  InkWell(
-                    child: Text(
-                      "Employer",
-                      style: headline5,
-                    ),
-                    onTap:(){ 
-                      Get.to(() => EmployerLoginScreen());
-                    },
-                  ),
-                ],
-              ),
+              //   children: [
+              //     InkWell(
+              //       child: Text(
+              //         "Employee", 
+              //         style: headline4.copyWith(color: AppColors.mainTextColor2),
+              //       ),
+              //     ),
+              //     SizedBox(width: Dimensions.size5, height: Dimensions.size4),
+              //     InkWell(
+              //       child: Text(
+              //         "Employer",
+              //         style: headline5,
+              //       ),
+              //       onTap:(){ 
+              //         Get.to(() => EmployerLoginScreen());
+              //       },
+              //     ),
+              //   ],
+              // ),
               SizedBox(width: double.infinity, height: Dimensions.size10),
               Form(
                 key: _myFormKey,
@@ -165,13 +165,14 @@ class _EmployeeLoginScreenState extends State<EmployeeLoginScreen> {
                   ],
                 ),
               ),
+              SizedBox(height: Dimensions.size16),
               // Forgot Password Text and the SignIn Button
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
                 children: [
                   InkWell(
                     child: Text(
-                      "Forgot Password?",
+                      "Click to go in",
                       style: headline4.copyWith(color: AppColors.mainTextColor2),
                     ),
                   ),
@@ -191,25 +192,25 @@ class _EmployeeLoginScreenState extends State<EmployeeLoginScreen> {
               ),  
                 SizedBox(height: Dimensions.size40),
               // Don't have account? section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center, 
-                children: [
-                  Text(
-                    "Don't have an account?",
-                    style: headline4,
-                  ),
-                  SizedBox(width: Dimensions.size9),
-                  InkWell(
-                    onTap: (){
-                      Get.toNamed(RegisterScreen.routeName);
-                    },
-                    child: Text(
-                      "Create One",
-                      style: headline4.copyWith(color: AppColors.mainTextColor1),
-                    ),
-                  ),
-                ]
-              ),              
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center, 
+              //   children: [
+              //     Text(
+              //       "Don't have an account?",
+              //       style: headline4,
+              //     ),
+              //     SizedBox(width: Dimensions.size9),
+              //     InkWell(
+              //       onTap: (){
+              //         Get.toNamed(RegisterScreen.routeName);
+              //       },
+              //       child: Text(
+              //         "Create One",
+              //         style: headline4.copyWith(color: AppColors.mainTextColor1),
+              //       ),
+              //     ),
+              //   ]
+              // ),              
             ],
           ),
         ),

@@ -10,6 +10,7 @@ import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/lists/chart_filter_card.dart';
 import 'package:tanor/custom_widgets/lists/product_item_widget.dart';
 import 'package:tanor/models/chart_model.dart';
+import 'package:tanor/screens/dashboard/sold_product_info.dart';
 
 class AdminTotalIcomeScreen extends StatefulWidget {
   const AdminTotalIcomeScreen({Key? key}) : super(key: key);
@@ -196,12 +197,18 @@ class _AdminTotalIcomeScreenState extends State<AdminTotalIcomeScreen> {
                     separatorBuilder: (context, index) =>  SizedBox(height: Dimensions.size9),   
                     itemBuilder: (BuildContext context, int index){
                       var productSold = _productController.allSalesDataList[index];
-                      return   ProductItemWidget(
-                        productName: productSold.productName, // name
-                        time: '${productSold.time} ',
-                        date: productSold.date,
-                        price: '+${productSold.totalAmount}',
-                        quantity: productSold.unitSold.toString(), // quantity sold
+
+                      return   InkWell(
+                        onTap: (){
+                           Get.to(SoldProductInfoScreen(soldProduct: productSold));
+                        },
+                        child: ProductItemWidget(
+                          productName: productSold.productName, // name
+                          time: '${productSold.time} ',
+                          date: productSold.date,
+                          price: '+${productSold.totalAmount}',
+                          quantity: productSold.unitSold.toString(), // quantity sold
+                        ),
                       );
                     }
                   ),

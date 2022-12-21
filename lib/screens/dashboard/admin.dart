@@ -14,6 +14,7 @@ import 'package:tanor/custom_widgets/lists/product_item_widget.dart';
 import 'package:tanor/models/chart_model.dart';
 import 'package:tanor/models/sales_model.dart';
 import 'package:tanor/screens/dashboard/admin_total_income.dart';
+import 'package:tanor/screens/dashboard/sold_product_info.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -302,12 +303,17 @@ class _AdminScreenState extends State<AdminScreen> {
                         
                         var productSold = sortedSalesList[index];
 
-                        return ProductItemWidget(
-                          productName: productSold.productName, // name
-                          time: '${productSold.time} ',
-                          date: productSold.date,
-                          price: '+${productSold.totalAmount}',
-                          quantity: productSold.unitSold.toString(), // quantity sold
+                        return InkWell(
+                          onTap: (() {
+                             Get.to(SoldProductInfoScreen(soldProduct: productSold));
+                          }),
+                          child: ProductItemWidget(
+                            productName: productSold.productName, // name
+                            time: '${productSold.time} ',
+                            date: productSold.date,
+                            price: '+${productSold.totalAmount}',
+                            quantity: productSold.unitSold.toString(), // quantity sold
+                          ),
                         );
                       }
                     ),

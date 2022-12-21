@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tanor/app_constants/app_colors.dart';
 import 'package:tanor/app_constants/app_dimensions.dart';
 import 'package:tanor/app_constants/custom_text_styles.dart';
+import 'package:tanor/controllers/auth_controller.dart';
 import 'package:tanor/controllers/product_controller.dart';
 import 'package:tanor/custom_widgets/header/header_widget.dart';
 import 'package:tanor/custom_widgets/lists/inventory_item_card.dart';
@@ -18,6 +19,9 @@ class InventoryListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // instance of product controller
     ProductController productController = Get.find<ProductController>();
+
+    // instance of auth controller
+    AuthController authController = Get.find<AuthController>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -129,7 +133,7 @@ class InventoryListScreen extends StatelessWidget {
           }
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: authController.currentUserData.isStaff? null : FloatingActionButton(
         elevation: 3,
         child: const Icon(Icons.add),
         onPressed: (){ 

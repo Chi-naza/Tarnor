@@ -69,7 +69,7 @@ class ProductController extends GetxController{
 
 
   // A function which Sells a product
-  Future<void> sellProductItem({required ProductModel productModel, required int unitSold}) async {
+  Future<void> sellProductItem({required ProductModel productModel, required int unitSold, required String soldTo}) async {
     DateTime currentDateTime = DateTime.now();
     String productName = productModel.name.toUpperCase();
     try{
@@ -83,7 +83,8 @@ class ProductController extends GetxController{
         productName: productModel.name,
         time: myTime.value, 
         date: myDate.value,
-        dateCreated: currentDateTime
+        dateCreated: currentDateTime,
+        soldTo: soldTo
       );
       // Save sales info to the general sales collection in the DB
       await salesFirestoreReference.doc("$productName : $currentDateTime").set(salesModel.toJson());
